@@ -23,61 +23,75 @@ public class GeneratorServiceEntity {
 
     @Test
     public void generateCode() {
-        String packageName = "com.withmes";
+        String packageName = "cn.withmes";
         boolean serviceNameStartWithI = false;//user -> UserService, 设置成true: user -> IUserService
-        generateByTables(serviceNameStartWithI, packageName, "sys_role");
+        generateByTables(serviceNameStartWithI, packageName, "order_info","order_item");
     }
 
     private void generateByTables(boolean serviceNameStartWithI, String packageName, String... tableNames) {
         GlobalConfig config = new GlobalConfig();
-        String dbUrl = "jdbc:mysql://127.0.0.1:3306/plan_sys";
+      //  String dbUrl = "jdbc:mysql://127.0.0.1:3306/blissmall_msgcenter";
+        String dbUrl = "jdbc:mysql://182.254.234.193:3308/udo";
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
+       /* dataSourceConfig.setDbType(DbType.MYSQL)
+                .setUrl(dbUrl)
+                .setUsername("root")
+                .setPassword("123456")
+                .setDriverName("com.mysql.jdbc.Driver");*/
+
+
         dataSourceConfig.setDbType(DbType.MYSQL)
                 .setUrl(dbUrl)
                 .setUsername("root")
                 .setPassword("123456")
                 .setDriverName("com.mysql.jdbc.Driver");
+
+
         StrategyConfig strategyConfig = new StrategyConfig();
         strategyConfig
                 .setCapitalMode(true)
                 .setEntityLombokModel(false)
                 .setDbColumnUnderline(true)
                 .setNaming(NamingStrategy.underline_to_camel)
-                .setInclude(tableNames);//修改替换成你需要的表名，多个表名传数组
+                .setInclude(tableNames).setRestControllerStyle(true);//修改替换成你需要的表名，多个表名传数组
 
         // 自定义实体父类
         // strategyConfig.setSuperEntityClass("com.baomidou.demo.TestEntity");
         // 自定义实体，公共字段
         // strategyConfig.setSuperEntityColumns(new String[] { "test_id", "age" });
         // 自定义 mapper 父类
-         strategyConfig.setSuperMapperClass(" com.withmes.plan.config.base.dal.BaseMapper");
+         strategyConfig.setSuperMapperClass(" cn.withmes.common.dal.BaseMapper");
         // 自定义 service 父类
-         strategyConfig.setSuperServiceClass("com.withmes.plan.config.base.service.BaseService");
+         strategyConfig.setSuperServiceClass("cn.withmes.common.service.BaseService");
         // 自定义 service 实现类父类
-         strategyConfig.setSuperServiceImplClass("com.withmes.plan.config.base.service.BaseServiceImpl");
+         strategyConfig.setSuperServiceImplClass("cn.withmes.common.service.BaseServiceImpl");
         // 自定义 controller 父类
-         strategyConfig.setSuperControllerClass("com.withmes.plan.config.base.web.BaseRestfulController");
-         strategyConfig.setEntityColumnConstant(true);
+         strategyConfig.setSuperControllerClass("cn.withmes.common.web.BaseRestfulController");
+        strategyConfig.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
+        strategyConfig.setEntityLombokModel(true);
+        strategyConfig.setControllerMappingHyphenStyle(true);
+        strategyConfig.entityTableFieldAnnotationEnable(true);
+        //strategyConfig.sett
+        // strategyConfig.setEntityColumnConstant(true);
 
          //setFileOverride(true) 设置文件覆盖
         // setBaseResultMap(true) 此处设置生成xml模板里面的内容
         // setBaseColumnList(true) 此处设置生成xml模板里面的内容(返回列类型)
         // setActiveRecord(true) 看翻译是记录活动  没懂什么意思;
         config.setActiveRecord(false)
-                .setAuthor("liming")
+                .setAuthor("leegoo")
                 .setOutputDir("d:\\codeGen")
-                .setFileOverride(true).setBaseResultMap(true).setBaseColumnList(true).setActiveRecord(true);
+                .setFileOverride(true).setControllerName("%sController").setBaseResultMap(true).setBaseColumnList(true).setEnableCache(false);
 
         if (!serviceNameStartWithI) {
             config.setServiceName("%sService");
         }
-        VelocityContext ctx = new VelocityContext();
 
         //此处配置生成controller mapper 等模板 默认放在resouces/下
         // 如上任何一个模块如果设置 空 OR Null 将不生成该模块。
         TemplateConfig tc = new TemplateConfig();
         tc.setController("/templates/controller.java.vm");
-         tc.setEntity("/templates/entity.java.vm");
+         tc.setEntity("/templates/entity.java.ftl");
          tc.setMapper("/templates/mapper.java.vm");
          tc.setXml("/templates/mapper.xml.vm");
          tc.setService("/templates/service.java.vm");
@@ -90,7 +104,7 @@ public class GeneratorServiceEntity {
                                 .setParent(packageName)
                                 .setController("controller")
                                 .setEntity("entity")
-                ).setTemplate(tc).execute();
+                ).execute();
     }
 
     private void generateByTables(String packageName, String... tableNames) {

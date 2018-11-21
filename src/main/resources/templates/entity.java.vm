@@ -15,7 +15,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 #end
-
 /**
  * @Description: $!{table.comment}
  * @author ${author}
@@ -23,12 +22,12 @@ import lombok.experimental.Accessors;
  */
 #if(${entityLombokModel})
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 #end
-#if(${table.convert})
+#*#if(${table.convert})
 @TableName("${table.name}")
-#end
+#end*#
+@TableName("${table.name}")
 #if(${superEntityClass})
 public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}>#end {
 #elseif(${activeRecord})
@@ -76,7 +75,7 @@ public class ${entity} implements Serializable {
     @TableLogic
 #end
 	private ${field.propertyType} ${field.propertyName};
-	
+
 #end
 ## ----------  END 字段循环遍历  ----------
 
