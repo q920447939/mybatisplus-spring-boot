@@ -1,7 +1,12 @@
 package ${package.Service};
 
 import ${package.Entity}.${entity};
+import ${package.Entity}.vo.${entity}ListVo;
+import cn.withmes.ten.square.artcle.entity.dto.${entity}DTO;
 import ${superServiceClassPackage};
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 
  /**
  * @Description: $!{table.comment} 服务类
@@ -12,6 +17,6 @@ import ${superServiceClassPackage};
 interface ${table.serviceName} : ${superServiceClass}<${entity}>
 #else
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
-
+        IPage<${entity}> page (Page<${entity}DTO> page, ${entity}ListVo vo);
 }
 #end

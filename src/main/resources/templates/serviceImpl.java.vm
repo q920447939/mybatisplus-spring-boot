@@ -1,12 +1,19 @@
 package ${package.ServiceImpl};
 
 import ${package.Entity}.${entity};
+import ${package.Entity}.vo.${entity}ListVo;
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import ${superMapperClassPackage};
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.withmes.common.utils.StringUtils;
+
+
 
 /**
  * @Description: $!{table.comment} 服务实现类
@@ -27,6 +34,16 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}
 	@Override
 	public BaseMapper<${entity}> getBaseMapper() {
 		return mapper;
+	}
+
+	@Override
+	public   IPage<${entity}> page (Page<${entity}DTO> page, ${entity}ListVo vo) {
+		${entity} dto = CopyAttributesUtils.copyAtoB(vo, ${entity}.class);
+        QueryWrapper wrapper = new QueryWrapper();
+        // todo wrapper select
+        Page<${entity}> queryPage = CopyAttributesUtils.copyAtoB(page, Page.class);
+        IPage<${entity}> pageList = mapper.selectPage(queryPage, wrapper);
+		return pageList;
 	}
 	
 }

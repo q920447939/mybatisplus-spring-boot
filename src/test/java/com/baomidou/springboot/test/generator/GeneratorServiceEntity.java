@@ -21,29 +21,31 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
  */
 public class GeneratorServiceEntity {
 
+    private  String packageName = "cn.withmes.ten.square.gathering";
+
+    private String[] tableNames = {"tb_gathering","tb_usergath"};
+
+    private String dbUrl = "jdbc:mysql://182.254.234.193:3308/tensquare_gathering";
+
+    private String dbUserName = "root";
+
+    private String dbPassWord ="123456";
+
     @Test
     public void generateCode() {
-        String packageName = "cn.withmes";
         boolean serviceNameStartWithI = false;//user -> UserService, 设置成true: user -> IUserService
-        generateByTables(serviceNameStartWithI, packageName, "order_info","order_item");
+        generateByTables(serviceNameStartWithI, packageName, tableNames);
     }
 
     private void generateByTables(boolean serviceNameStartWithI, String packageName, String... tableNames) {
         GlobalConfig config = new GlobalConfig();
       //  String dbUrl = "jdbc:mysql://127.0.0.1:3306/blissmall_msgcenter";
-        String dbUrl = "jdbc:mysql://182.254.234.193:3308/udo";
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
-       /* dataSourceConfig.setDbType(DbType.MYSQL)
-                .setUrl(dbUrl)
-                .setUsername("root")
-                .setPassword("123456")
-                .setDriverName("com.mysql.jdbc.Driver");*/
-
 
         dataSourceConfig.setDbType(DbType.MYSQL)
                 .setUrl(dbUrl)
-                .setUsername("root")
-                .setPassword("123456")
+                .setUsername(dbUserName)
+                .setPassword(dbPassWord)
                 .setDriverName("com.mysql.jdbc.Driver");
 
 
@@ -55,8 +57,7 @@ public class GeneratorServiceEntity {
                 .setNaming(NamingStrategy.underline_to_camel)
                 .setInclude(tableNames).setRestControllerStyle(true);//修改替换成你需要的表名，多个表名传数组
 
-        // 自定义实体父类
-        // strategyConfig.setSuperEntityClass("com.baomidou.demo.TestEntity");
+
         // 自定义实体，公共字段
         // strategyConfig.setSuperEntityColumns(new String[] { "test_id", "age" });
         // 自定义 mapper 父类
@@ -71,8 +72,7 @@ public class GeneratorServiceEntity {
         strategyConfig.setEntityLombokModel(true);
         strategyConfig.setControllerMappingHyphenStyle(true);
         strategyConfig.entityTableFieldAnnotationEnable(true);
-        //strategyConfig.sett
-        // strategyConfig.setEntityColumnConstant(true);
+
 
          //setFileOverride(true) 设置文件覆盖
         // setBaseResultMap(true) 此处设置生成xml模板里面的内容
@@ -91,7 +91,7 @@ public class GeneratorServiceEntity {
         // 如上任何一个模块如果设置 空 OR Null 将不生成该模块。
         TemplateConfig tc = new TemplateConfig();
         tc.setController("/templates/controller.java.vm");
-         tc.setEntity("/templates/entity.java.ftl");
+         tc.setEntity("/templates/entity.java.vm");
          tc.setMapper("/templates/mapper.java.vm");
          tc.setXml("/templates/mapper.xml.vm");
          tc.setService("/templates/service.java.vm");
@@ -104,7 +104,7 @@ public class GeneratorServiceEntity {
                                 .setParent(packageName)
                                 .setController("controller")
                                 .setEntity("entity")
-                ).execute();
+                ).setTemplate(tc).execute();
     }
 
     private void generateByTables(String packageName, String... tableNames) {
